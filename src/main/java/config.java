@@ -1,4 +1,3 @@
-import jdk.internal.org.jline.utils.ShutdownHooks;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -14,6 +13,7 @@ public class config implements ServletContextListener{
     public void contextInitialized(ServletContextEvent event) {
         executor = Executors.newSingleThreadExecutor();
         executor.submit(new Task()); // Task should implement Runnable.
+        System.out.println("in config");
     }
 
     public void contextDestroyed(ServletContextEvent event) {

@@ -4,7 +4,7 @@ plugins {
     id 'org.gretty' version '3.0.6' // This includes a jetty webserver
 }
 version '1.0-SNAPSHOT'
-sourceCompatibility = 1.8
+sourceCompatibility = 10
 
 repositories {
     mavenCentral()
