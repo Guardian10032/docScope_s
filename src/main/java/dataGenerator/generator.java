@@ -1,61 +1,47 @@
 package dataGenerator;
 
 import java.sql.Timestamp;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import static java.lang.Math.ceil;
 
-public class generator {
+abstract class generator {
     Data data=new Data();
-    public List<Double> ecg1Former=new ArrayList<>();
-    public List<Double> ecg1Latter;
-    private int size;
-    private long previousTime;
-    private long initialTime;
-    private int index1=0;
-    private int index2=0;
-
-    public generator(String reference,long initialTime) {
+    List<Double> Former;
+    List<Double> Latter;
+    int size;
+    long previousTime;
+    long initialTime;
+    int index1=0;
+    int index2=0;
+    String folder;
+    int fileIndex;
+    generator(long initialTime){
         this.initialTime=initialTime;
         previousTime=initialTime;
-//        ecg1Former=data.loadFile("ecg1_normal1");
-        ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);
-        ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);
-        ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);
-        ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);
-        ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);
-        ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);ecg1Former.add(1.0);
-        ecg1Latter=data.loadFile("ecg1_normal2");
-        size=ecg1Former.size();
-        ecg1Former.addAll(ecg1Latter);
-        System.out.println("1");
+        Former =data.loadFile(fileSelector());
+        Latter =data.loadFile(fileSelector());
+        size= Former.size();
+        Former.addAll(Latter);
     }
-    private String fileSelector() {
+    String fileSelector(){
         Random rand = new Random();
-        int fileIndex=rand.nextInt(99);
-        if (fileIndex<40) return "ecg1_normal1";
-        else if (fileIndex<80) return "ecg1_normal2";
-        else if (fileIndex<90) return "ecg1_high";
-        else return "ecg1_low";
+        fileIndex=rand.nextInt(99);
+        return null;
     }
-    public List<Double> outputValues(){
+    List<Double> outputValues(int fs){
         if (index2>size-1){
-            initialTime=initialTime+2*size;
-            ecg1Former.subList(0,size-1).clear();
-            size=ecg1Former.size();
-            ecg1Latter=data.loadFile(fileSelector());
-            ecg1Former.addAll(ecg1Latter);
-            System.out.println("1");
+            initialTime=initialTime+(1000/fs)*size;
+            Former.subList(0,size-1).clear();
+            size= Former.size();
+            Latter =data.loadFile(fileSelector());
+            Former.addAll(Latter);
         }
         long currentTime=new Timestamp(System.currentTimeMillis()).getTime();
-        index1= (int) ceil((((Long)previousTime)-((Long)initialTime))/2);
-        index2= (int) ceil((((Long)currentTime)-((Long)initialTime))/2);
+        index1= (int) ceil((((Long)previousTime)-((Long)initialTime))/(1000/fs));
+        index2= (int) ceil((((Long)currentTime)-((Long)initialTime))/(1000/fs));
         previousTime=currentTime;
-        System.out.println(ecg1Former.subList(index1,index2));
-        return ecg1Former.subList(index1,index2);
+        return Former.subList(index1,index2);
     }
-
 }
