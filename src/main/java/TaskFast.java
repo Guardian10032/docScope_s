@@ -1,12 +1,13 @@
-import dataGenerator.generator_ecg1;
+import Servlet.dataBase;
+import dataGenerator.*;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-public class Task implements Runnable{
+public class TaskFast implements Runnable{
     @Override
     public void run() {
-        System.out.println("in task");
+        System.out.println("in taskFast");
         generator_ecg1 ecg1Generator =new generator_ecg1();
         while (true){
             try {
@@ -14,9 +15,11 @@ public class Task implements Runnable{
                 List<Double> temp = ecg1Generator.outputValues(500);
                 long time=new Timestamp(System.currentTimeMillis()).getTime();
                 new dataBase().addData_ecg1(time,temp);
+//                System.out.println("F");
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
         }
     }
 }

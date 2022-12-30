@@ -8,15 +8,19 @@ import java.util.concurrent.Executors;
 @WebListener
 public class config implements ServletContextListener{
 
-    private ExecutorService executor;
+    private ExecutorService executorFast;
+    private ExecutorService executorSlow;
 
     public void contextInitialized(ServletContextEvent event) {
-        executor = Executors.newSingleThreadExecutor();
-        executor.submit(new Task()); // Task should implement Runnable.
-        System.out.println("in config");
+        executorFast = Executors.newSingleThreadExecutor();
+        executorFast.submit(new TaskFast()); // Task should implement Runnable.
+        System.out.println("S");
+        executorSlow = Executors.newSingleThreadExecutor();
+        executorSlow.submit(new TaskSlow()); // Task should implement Runnable.
     }
 
     public void contextDestroyed(ServletContextEvent event) {
-        executor.shutdown();
+        executorFast.shutdown();
+        executorSlow.shutdown();
     }
 }
