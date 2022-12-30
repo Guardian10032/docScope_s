@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.Math.ceil;
 
-@WebServlet(urlPatterns = {"/recorder"},loadOnStartup = 2)
+@WebServlet(urlPatterns = {"/recorder"},loadOnStartup = 1)
 public class recorder extends HttpServlet{
     ServletConfig config = null;
     Gson gson = new Gson();
@@ -33,11 +33,11 @@ public class recorder extends HttpServlet{
         requestPack reqPack1 =gson.fromJson(reqBody,requestPack.class);
 
         resp.setContentType("application/json");
-        boolean findIndex=true;
         List<Long> timeList=new ArrayList<>();
-        long time;
+        responsePack respPack=new responsePack();
         try {
-            time=(long) new dataBase().getTimeSet().lower(reqPack1.startTime);
+            boolean findIndex=true;
+            long time=(long) new dataBase().getTimeSet().lower(reqPack1.startTime);
             if (time< reqPack1.endTime){
                 timeList.add(time);
             }
@@ -50,40 +50,22 @@ public class recorder extends HttpServlet{
             }
         }catch (NullPointerException e){
             System.out.println("exist");
+//            if (timeList.size()==0){
+//                respPack.setLastTime(timeList.get(timeList.size()-1));
+//                System.out.println(respPack.lastTime);
+//            }else {
+//                respPack.setLastTime((long) new dataBase().getTimeSet().higher(timeList.get(timeList.size()-1)));
+//            }
         } finally {
-            System.out.println("finally");
             List<Double> values=new ArrayList<>();
             if(timeList.size()!=0) {
                 for (Long i : timeList) {
                     values.addAll(new dataBase().getData_ecg1(i));
                 }
             }
-            System.out.println(timeList);
-            String jsonString = gson.toJson(new responsePack(values));
+            respPack.setValueList(values);
+            String jsonString = gson.toJson(respPack);
             resp.getWriter().write(jsonString);
-            System.out.println("in post");
         }
     }
-
-//    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        String reqBody=req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-//        requestPack reqPack1 =gson.fromJson(reqBody,requestPack.class);
-//
-//        resp.setContentType("application/json");
-//        long timestamp=new dataBase().getTimestamp();
-//        int index1= (int) ceil((((Long)reqPack1.startTime)-((Long)timestamp))/2);
-//        int index2= (int) ceil((((Long)reqPack1.endTime)-((Long)timestamp))/2);
-//        List<Double> values=new ArrayList<>();
-//        int temp=-1;
-//        for(List<Double> i :new dataBase().getData_ecg1()){
-//            temp+=i.size();
-//            if
-//            values.addAll(i);
-//        }
-//        responsePack respPack1 =new responsePack(values.subList(index1,index2),reqPack1.endTime);
-//
-//        String jsonString = gson.toJson(respPack1);
-//        resp.getWriter().write(jsonString);
-//        System.out.println("in post");
-//    }
 }

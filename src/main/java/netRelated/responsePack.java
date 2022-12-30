@@ -12,7 +12,13 @@ public class responsePack {
 //        }
 //    }
     public List<Double> valueList;
-    public responsePack(List<Double> valueList){
-        this.valueList=valueList;
+    public long lastTime=0;
+
+    public void setLastTime(long lastTime) {
+        this.lastTime = lastTime;
+    }
+
+    public void setValueList(List<Double> valueList) {
+        this.valueList = valueList;
     }
 }

@@ -9,8 +9,8 @@ import static java.lang.Math.ceil;
 
 public class generator_ecg1 extends generator{
     int fs;
-    public generator_ecg1(long initialTime) {
-        super(initialTime);
+    public generator_ecg1() {
+        super();
     }
     public String fileSelector() {
         super.fileSelector();

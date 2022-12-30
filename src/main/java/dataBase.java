@@ -2,14 +2,7 @@ import java.util.*;
 
 public class dataBase {
 
-    private static long timestamp;
     private static TreeMap<Long,List<Double>> data_ecg1=new TreeMap<>();
-    public void setTimestamp(long timestamp){
-        this.timestamp=timestamp;
-    }
-    public long getTimestamp(){
-        return timestamp;
-    }
     public void addData_ecg1(long time,List<Double> ecg1){
         this.data_ecg1.put(time,ecg1);
     }

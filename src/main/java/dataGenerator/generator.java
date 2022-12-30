@@ -17,8 +17,8 @@ abstract class generator {
     int index2=0;
     String folder;
     int fileIndex;
-    generator(long initialTime){
-        this.initialTime=initialTime;
+    generator(){
+        initialTime=new Timestamp(System.currentTimeMillis()).getTime();
         previousTime=initialTime;
         Former =data.loadFile(fileSelector());
         Latter =data.loadFile(fileSelector());
