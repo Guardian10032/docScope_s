@@ -9,15 +9,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Data {
-    public List<Double> values = new ArrayList();
-
     public List<Double> loadFile(String filename){
+        List<Double> values = new ArrayList();
         String line;
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("data/adult_data/"+filename+".csv");
         InputStreamReader streamReader = new InputStreamReader(inputStream);
         try (BufferedReader br = new BufferedReader(streamReader)) {
             while((line = br.readLine()) != null){
-                this.values.add(Double.valueOf(line));
+                values.add(Double.valueOf(line));
             }
         } catch (Exception e){
             System.out.println(e);

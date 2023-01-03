@@ -10,13 +10,14 @@ import static java.lang.Math.ceil;
 public class generator_temperature extends generator{
     List<List<String>> partList=new ArrayList<>();
     int partIndex;
-    public generator_temperature() {
+
+    public generator_temperature(long initialTime) {
+        super(initialTime);
         partList.add(Arrays.asList("temperature1_high","temperature1_normal"));
         partList.add(Arrays.asList("temperature2_high","temperature2_normal"));
         partList.add(Arrays.asList("temperature3_normal1","temperature3_normal2"));
 
-        Timestamp clock=new Timestamp(System.currentTimeMillis());
-        initialTime=clock.getTime();
+        Timestamp clock=new Timestamp(initialTime);
         previousTime=initialTime;
         int hour = clock.toLocalDateTime().getHour();
         int min = clock.toLocalDateTime().getMinute();
@@ -24,7 +25,7 @@ public class generator_temperature extends generator{
         if(hour<8){
             partIndex=0;
             Former=data.loadFile(fileSelector());
-            Former=Former.subList(3600*hour+60*min+sec,Former.size()-1);
+            Former=new ArrayList<>(Former.subList(3600*hour+60*min+sec,Former.size()-1));
             partIndex++;
             Latter=data.loadFile(fileSelector());
         } else if (hour<16) {
@@ -62,8 +63,8 @@ public class generator_temperature extends generator{
             Former.addAll(Latter);
         }
         long currentTime=new Timestamp(System.currentTimeMillis()).getTime();
-        index1= (int) ceil((((Long)previousTime)-((Long)initialTime))/(1000/fs));
-        index2= (int) ceil((((Long)currentTime)-((Long)initialTime))/(1000/fs));
+        index1= (int) ceil((previousTime-initialTime)/1000*fs);
+        index2= (int) ceil((currentTime-initialTime)/1000*fs);
         previousTime=currentTime;
         return Former.subList(index1,index2);
     }

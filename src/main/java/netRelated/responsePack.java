@@ -17,7 +17,6 @@ public class responsePack {
     public void setLastTime(long lastTime) {
         this.lastTime = lastTime;
     }
-
     public void setValueList(List<Double> valueList) {
         this.valueList = valueList;
     }

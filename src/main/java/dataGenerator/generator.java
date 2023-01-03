@@ -17,20 +17,16 @@ abstract class generator {
     int index2=0;
     String folder;
     int fileIndex;
-    generator(){
-        initialTime=new Timestamp(System.currentTimeMillis()).getTime();
-        previousTime=initialTime;
-        Former =data.loadFile(fileSelector());
-        Latter =data.loadFile(fileSelector());
-        size= Former.size();
-        Former.addAll(Latter);
+    public generator(long initialTime){
+        this.initialTime=initialTime;
     }
+
     String fileSelector(){
         Random rand = new Random();
         fileIndex=rand.nextInt(99);
         return null;
     }
-    List<Double> outputValues(int fs){
+    public List<Double> outputValues(int fs){
         if (index2>size-1){
             initialTime=initialTime+(1000/fs)*size;
             Former.subList(0,size-1).clear();
@@ -39,8 +35,8 @@ abstract class generator {
             Former.addAll(Latter);
         }
         long currentTime=new Timestamp(System.currentTimeMillis()).getTime();
-        index1= (int) ceil((((Long)previousTime)-((Long)initialTime))/(1000/fs));
-        index2= (int) ceil((((Long)currentTime)-((Long)initialTime))/(1000/fs));
+        index1= (int) ceil((previousTime-initialTime)*fs/1000);
+        index2= (int) ceil((currentTime-initialTime)*fs/1000);
         previousTime=currentTime;
         return Former.subList(index1,index2);
     }

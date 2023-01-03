@@ -9,8 +9,13 @@ import static java.lang.Math.ceil;
 
 public class generator_ecg1 extends generator{
     int fs;
-    public generator_ecg1() {
-        super();
+    public generator_ecg1(long initialTime) {
+        super(initialTime);
+        previousTime=initialTime;
+        Former =data.loadFile(fileSelector());
+        Latter =data.loadFile(fileSelector());
+        size= Former.size();
+        Former.addAll(Latter);
     }
     public String fileSelector() {
         super.fileSelector();
@@ -19,9 +24,6 @@ public class generator_ecg1 extends generator{
         else if (fileIndex<90) return "ecg1_high";
         else return "ecg1_low";
     }
-    public List<Double> outputValues(int fs){
-        super.outputValues(fs);
-        return Former.subList(index1,index2);
-    }
+
 
 }

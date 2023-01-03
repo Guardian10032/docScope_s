@@ -9,8 +9,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.*;
+
 
 public class netAction {
+    public static String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
     public static responsePack postRequestReal(requestPack reqPack) throws IOException {
         Gson gson = new Gson();
         String jsonString = gson.toJson(reqPack);
@@ -64,5 +67,45 @@ public class netAction {
         }
         in.close();
 
+    }
+    public static void databaseUpdate(String order){
+        Connection conn=null;
+        PreparedStatement s=null;
+        try {
+            conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
+            s = conn.prepareStatement(order);
+            s.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("execute fail in time");
+        }
+        try {
+            s.close();
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("end connection fail");
+        }
+    }
+    public static long getInitialTime(){
+        Connection conn = null;
+        PreparedStatement s = null;
+        long initialTime=0;
+
+        String orderTime = "select initialtime from patientlist where reference='chuqiaoShen_30'";
+        try {
+            conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
+            s = conn.prepareStatement(orderTime);
+            ResultSet resultSet = s.executeQuery();
+            while (resultSet.next()) {
+                initialTime = resultSet.getLong(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("execute fail in time");
+        }
+        try {
+            s.close();
+        } catch (SQLException e) {
+            System.out.println("end statement fail in time");
+        }
+        return initialTime;
     }
 }
