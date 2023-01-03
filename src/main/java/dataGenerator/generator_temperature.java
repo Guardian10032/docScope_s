@@ -63,8 +63,8 @@ public class generator_temperature extends generator{
             Former.addAll(Latter);
         }
         long currentTime=new Timestamp(System.currentTimeMillis()).getTime();
-        index1= (int) ceil((previousTime-initialTime)/1000*fs);
-        index2= (int) ceil((currentTime-initialTime)/1000*fs);
+        index1= (int) ceil((previousTime-initialTime)*fs/1000);
+        index2= (int) ceil((currentTime-initialTime)*fs/1000);
         previousTime=currentTime;
         return Former.subList(index1,index2);
     }
