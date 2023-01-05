@@ -2,6 +2,8 @@ package Servlet;
 
 import com.google.gson.Gson;
 import dataGenerator.generator_ecg1;
+import multiThread.Task;
+import multiThread.TaskSlow;
 import netRelated.netAction;
 
 import javax.servlet.ServletConfig;
@@ -14,12 +16,73 @@ import java.sql.*;
 @WebServlet(urlPatterns = {"/data"},loadOnStartup = 1)
 public class data extends HttpServlet{
     Gson gson = new Gson();
-//    ServletConfig sc;
-//    public void init(ServletConfig sc) {
-//        this.sc = sc;
-//        System.out.println("in init");
-//
-//    }
+    ServletConfig sc;
+    public void init(ServletConfig sc) {
+        this.sc = sc;
+        System.out.println("in init");
+        try {
+            // Registers the driver
+            Class.forName("org.postgresql.Driver");
+        } catch (Exception e) {
+        }
+        String table="drop table ecgRESP;\n" +
+                "drop table patientlist;\n" +
+                "drop table other;\n" +
+                "create table ecgRESP (\n" +
+                "                         id serial primary key,\n" +
+                "                         ecg1 double precision,\n" +
+                "                         ecg2 double precision,\n" +
+                "                         RESP double precision\n" +
+                ");\n" +
+                "create table patientList(\n" +
+                "                            reference varchar(128) PRIMARY KEY,\n" +
+                "                            initialTime bigint,\n" +
+                "                            firstName varchar(128),\n" +
+                "                            LastName varchar(128),\n" +
+                "                            gender boolean,\n" +
+                "                            yearBirth smallint,\n" +
+                "                            temperatureHigh smallint,\n" +
+                "                            temperatureLow smallint,\n" +
+                "                            heartHigh smallint,\n" +
+                "                            heartLow smallint,\n" +
+                "                            systolicHigh smallint,\n" +
+                "                            systolicLow smallint,\n" +
+                "                            diastolicHigh smallint,\n" +
+                "                            diastolicLow smallint,\n" +
+                "                            respiratoryHigh smallint,\n" +
+                "                            respiratoryLow smallint\n" +
+                ");\n" +
+                "create table other(\n" +
+                "                      id serial primary key,\n" +
+                "                      temperature double precision,\n" +
+                "                      heart smallint,\n" +
+                "                      systolic smallint,\n" +
+                "                      diastolic smallint,\n" +
+                "                      respiratory smallint\n" +
+                ");";
+        netAction.databaseUpdate(table);
+
+
+        String ref = "'chuqiaoShen_30'";
+        long initialTime=new Timestamp(System.currentTimeMillis()).getTime();
+        String patientOrder="INSERT INTO patientlist (reference,initialTime) values ("
+                +ref
+                + ","
+                +initialTime
+                +");";
+        netAction.databaseUpdate(patientOrder);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println("sleep fail");
+        }
+
+        Thread task1=new Thread(new Task());
+        task1.start();
+        Thread task2=new Thread(new TaskSlow());
+        task2.start();
+    }
 
 //    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 //        String reqBody=req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));

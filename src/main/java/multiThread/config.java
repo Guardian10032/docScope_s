@@ -1,3 +1,4 @@
+package multiThread;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -9,11 +10,17 @@ import java.util.concurrent.Executors;
 public class config implements ServletContextListener{
 
     private ExecutorService executor;
+    private ExecutorService executor2;
 
 
     public void contextInitialized(ServletContextEvent event) {
-        executor = Executors.newSingleThreadExecutor();
-        executor.submit(new Task()); // Task should implement Runnable.
+//        Thread task1=new Thread(new multiThread.Task());
+//        task1.start();
+//        Thread task2=new Thread(new multiThread.TaskSlow());
+//        task2.start();
+//        executor = Executors.newSingleThreadExecutor();
+//        executor.submit(new multiThread.Task()); // multiThread.Task should implement Runnable.
+//        executor2.submit(new multiThread.TaskSlow());
     }
 
     public void contextDestroyed(ServletContextEvent event) {
