@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static java.lang.Math.ceil;
 
@@ -45,26 +46,26 @@ public class generator_temperature extends generator{
         Former.addAll(Latter);
     }
     public String fileSelector() {
-        super.fileSelector();
+        Random rand = new Random();
+        fileIndex=rand.nextInt(99);
         if (fileIndex<50) return partList.get(partIndex).get(0);
         else return partList.get(partIndex).get(1);
     }
-    @Override
-    public List<Double> outputValues(int fs){
+
+    public List<Double> outputValues(long currentTime){
         if (index2>size-1){
             partIndex++;
             if (partIndex==3){
                 partIndex=0;
             }
-            initialTime=initialTime+(1000/fs)*size;
+            initialTime=initialTime+1000*size;
             Former.subList(0,size-1).clear();
             size= Former.size();
             Latter =data.loadFile(fileSelector());
             Former.addAll(Latter);
         }
-        long currentTime=new Timestamp(System.currentTimeMillis()).getTime();
-        index1= (int) ceil((previousTime-initialTime)*fs/1000);
-        index2= (int) ceil((currentTime-initialTime)*fs/1000);
+        index1= (int) ceil((previousTime-initialTime)/1000);
+        index2= (int) ceil((currentTime-initialTime)/1000);
         previousTime=currentTime;
         return Former.subList(index1,index2);
     }

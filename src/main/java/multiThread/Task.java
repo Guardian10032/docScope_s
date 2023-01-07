@@ -12,14 +12,13 @@ public class Task implements Runnable{
     public static String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
     @Override
     public void run() {
-        String fastOrder = "INSERT INTO ecgresp (ecg1) values (?);";
+        String ecg1Order = "INSERT INTO ecgresp (ecg1) values (?);";
 
         generator_ecg1 ecg1Generator =new generator_ecg1(netAction.getInitialTime());
 
         Connection conn=null;
         PreparedStatement s=null;
         List<Double> temp;
-
 
         while (true){
             //Fast task here: sampling frequency is 500Hz refresh about every 100ms
@@ -28,7 +27,7 @@ public class Task implements Runnable{
             } catch (InterruptedException e) {
                 System.out.println("sleep fail");
             }
-            temp = ecg1Generator.outputValues(500);
+            temp = ecg1Generator.outputValues();
 //                System.out.println(temp.size());
             try {
                 conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
@@ -37,7 +36,7 @@ public class Task implements Runnable{
             }
             for(double data:temp) {
                 try {
-                    s = conn.prepareStatement(fastOrder);
+                    s = conn.prepareStatement(ecg1Order);
 //                        s.setString(1,"ecg1");
 //                        s.setDouble(2, data);
                     s.setDouble(1,data);
