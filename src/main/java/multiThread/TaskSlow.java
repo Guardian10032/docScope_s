@@ -11,8 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import static Servlet.servletData.dbUrl;
+
 public class TaskSlow implements Runnable{
-    public static String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
     @Override
     public void run() {
 

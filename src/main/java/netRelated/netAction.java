@@ -11,9 +11,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
-
+import static Servlet.servletData.dbUrl;
 public class netAction {
-    public static String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
     public static responsePack postRequestReal(requestPack reqPack) throws IOException {
         Gson gson = new Gson();
         String jsonString = gson.toJson(reqPack);
@@ -85,15 +84,16 @@ public class netAction {
             System.out.println("end connection fail");
         }
     }
-    public static long getInitialTime(){
+    public static long getInitialTime(String ref){
         Connection conn = null;
         PreparedStatement s = null;
         long initialTime=0;
 
-        String orderTime = "select initialtime from patientlist where reference='chuqiaoShen_30'";
+        String orderTime = "select initialtime from patientlist where reference=?";
         try {
             conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
             s = conn.prepareStatement(orderTime);
+            s.setString(1,"'chuqiaoShen_30'");
             ResultSet resultSet = s.executeQuery();
             while (resultSet.next()) {
                 initialTime = resultSet.getLong(1);

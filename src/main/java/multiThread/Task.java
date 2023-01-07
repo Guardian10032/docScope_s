@@ -7,14 +7,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Servlet.servletData.dbUrl;
+
 
 public class Task implements Runnable{
-    public static String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
     @Override
     public void run() {
         String ecg1Order = "INSERT INTO ecgresp (ecg1) values (?);";
 
-        generator_ecg1 ecg1Generator =new generator_ecg1(netAction.getInitialTime());
+        generator_ecg1 ecg1Generator =new generator_ecg1(netAction.getInitialTime("'chuqiaoShen_30'"),1);
 
         Connection conn=null;
         PreparedStatement s=null;
@@ -27,7 +28,7 @@ public class Task implements Runnable{
             } catch (InterruptedException e) {
                 System.out.println("sleep fail");
             }
-            temp = ecg1Generator.outputValues();
+            temp = ecg1Generator.outputValues(1);
 //                System.out.println(temp.size());
             try {
                 conn = DriverManager.getConnection(dbUrl, "postgres", "1234");

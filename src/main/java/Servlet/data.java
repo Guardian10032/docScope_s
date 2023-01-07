@@ -11,10 +11,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import java.sql.*;
 
-
+import static Servlet.servletData.*;
 
 @WebServlet(urlPatterns = {"/data"},loadOnStartup = 1)
 public class data extends HttpServlet{
+
     Gson gson = new Gson();
     ServletConfig sc;
     public void init(ServletConfig sc) {
@@ -25,9 +26,10 @@ public class data extends HttpServlet{
             Class.forName("org.postgresql.Driver");
         } catch (Exception e) {
         }
-        String table="drop table ecgRESP;\n" +
-                "drop table patientlist;\n" +
-                "drop table other;\n" +
+        String table=
+                "drop table if exists patientList;\n" +
+                "drop table if exists other;\n" +
+                "drop table if exists ecgRESP;\n" +
                 "create table ecgRESP (\n" +
                 "                         id serial primary key,\n" +
                 "                         ecg1 double precision,\n" +
@@ -61,27 +63,24 @@ public class data extends HttpServlet{
                 "                      respiratory smallint\n" +
                 ");";
         netAction.databaseUpdate(table);
-
-
-        String ref = "'chuqiaoShen_30'";
-        long initialTime=new Timestamp(System.currentTimeMillis()).getTime();
-        String patientOrder="INSERT INTO patientlist (reference,initialTime) values ("
-                +ref
-                + ","
-                +initialTime
-                +");";
-        netAction.databaseUpdate(patientOrder);
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            System.out.println("sleep fail");
+        for (String ref:referenceList){
+            Timestamp initialTime=new Timestamp(System.currentTimeMillis());
+            String patientOrder="INSERT INTO patientList (reference,initialTime) values ("
+                    +ref
+                    + ","
+                    +initialTime.getTime()
+                    +");";
+            netAction.databaseUpdate(patientOrder);
         }
 
-        Thread task1=new Thread(new Task());
-        task1.start();
-        Thread task2=new Thread(new TaskSlow());
-        task2.start();
+
+//        Connection conn = null;
+//        try {
+//            conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
+//            Statement s = conn.prepareStatement(table);
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
 //    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
