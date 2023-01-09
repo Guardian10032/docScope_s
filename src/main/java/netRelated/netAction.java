@@ -75,7 +75,7 @@ public class netAction {
             s = conn.prepareStatement(order);
             s.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("execute fail in time");
+            System.out.println("execute fail in databaseUpdate");
         }
         try {
             s.close();

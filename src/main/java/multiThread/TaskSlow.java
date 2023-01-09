@@ -1,6 +1,6 @@
 package multiThread;
 
-import dataGenerator.generator_slow;
+import dataGenerator.generator_patient;
 import dataGenerator.generator_systolic;
 import dataGenerator.generator_temperature;
 import netRelated.netAction;
@@ -14,21 +14,25 @@ import java.util.List;
 import static Servlet.servletData.dbUrl;
 
 public class TaskSlow implements Runnable{
+    List<generator_patient> patients;
+    public TaskSlow(List<generator_patient> patients){
+        this.patients=patients;
+    }
     @Override
     public void run() {
 
-        String slowOrder="INSERT INTO other (temperature,systolic,diastolic) values (?,?,?);";
-        generator_slow slowGenerator=new generator_slow();
+        String slowOrder="INSERT INTO other (temperature,heart,systolic,diastolic,respiratory) values (?,?,?,?,?);";
 
         Connection conn=null;
         PreparedStatement s=null;
+        List<List<Double>> temp;
         while (true){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println("sleep fail");
             }
-            List<List<Double>> temp=slowGenerator.outputValues();
+            temp=patients.get(0).outputValuesSlow();
 
             try {
                 conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
@@ -41,6 +45,8 @@ public class TaskSlow implements Runnable{
                     s.setDouble(1,temp.get(0).get(i));
                     s.setDouble(2,temp.get(1).get(i));
                     s.setDouble(3,temp.get(2).get(i));
+                    s.setDouble(4,temp.get(3).get(i));
+                    s.setDouble(5,temp.get(4).get(i));
                     s.executeUpdate();
                 } catch (SQLException e) {
                     System.out.println("execute fail in loop");

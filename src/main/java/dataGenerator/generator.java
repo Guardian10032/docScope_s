@@ -15,7 +15,6 @@ abstract class generator {
     long initialTime;
     int index1=0;
     int index2=0;
-    String folder;
     int fileIndex;
     public generator(long initialTime){
         this.initialTime=initialTime;
