@@ -19,7 +19,7 @@ public class generator_patient {
     private generator_systolic systolicGenerator;
     private generator_diastolic diastolicGenerator;
     private generator_respiratoryRate respiratoryGenerator;
-    public generator_patient(String ref){
+    public generator_patient(String ref,String status){
         long initialTime=new Timestamp(System.currentTimeMillis()).getTime();
         String patientOrder="INSERT INTO patientList (reference,initialTime) values (?,?);";
         Connection conn=null;
@@ -45,15 +45,15 @@ public class generator_patient {
         }
         servletData.initialTime.add(initialTime);
 
-        ecg1Generator =new generator_ecg1(initialTime);
-        ecg2Generator =new generator_ecg2(initialTime);
-        respGenerator=new generator_resp(initialTime);
+        ecg1Generator =new generator_ecg1(initialTime,status);
+        ecg2Generator =new generator_ecg2(initialTime,status);
+        respGenerator=new generator_resp(initialTime,status);
 
-        temperatureGenerator =new generator_temperature(initialTime);
-        heartGenerator=new generator_heartRate(initialTime);
-        systolicGenerator =new generator_systolic(initialTime);
-        diastolicGenerator =new generator_diastolic(initialTime);
-        respiratoryGenerator=new generator_respiratoryRate(initialTime);
+        temperatureGenerator =new generator_temperature(initialTime,status);
+        heartGenerator=new generator_heartRate(initialTime,status);
+        systolicGenerator =new generator_systolic(initialTime,status);
+        diastolicGenerator =new generator_diastolic(initialTime,status);
+        respiratoryGenerator=new generator_respiratoryRate(initialTime,status);
     }
 
     public List<List<Double>> outputValuesSlow(){

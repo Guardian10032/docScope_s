@@ -63,7 +63,7 @@ public class BackgroundJobManager implements ServletContextListener {
         } catch (InterruptedException e) {
             System.out.println("sleep fail");
         }
-        generator_patient patient1=new generator_patient("patient1");
+        generator_patient patient1=new generator_patient("patient1","abnormal");
         List<generator_patient> patients=new ArrayList<>();
         patients.add(patient1);
         task1=new Thread(new TaskFast(patients));

@@ -2,17 +2,17 @@ package dataGenerator;
 
 import java.util.Random;
 
-public class generatorRespiratoryRelate extends generator{
+public abstract class generatorRespiratoryRelate extends generator{
     static int respiratoryIndex=0;
     static int fileRespiratoryIndex;
-    public generatorRespiratoryRelate(long initialTime) {
-        super(initialTime);
+    public generatorRespiratoryRelate(long initialTime,String status) {
+        super(initialTime,status);
     }
     public void randomRespiratoryGenerator(){
         System.out.println("Respiratory"+respiratoryIndex);
         if(respiratoryIndex==0) {
             Random rand = new Random();
-            fileRespiratoryIndex = rand.nextInt(99);
+            fileRespiratoryIndex = rand.nextInt(randomLimit);
         }
         respiratoryIndex++;
         if (respiratoryIndex==2){

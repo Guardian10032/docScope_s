@@ -10,7 +10,7 @@ class generator_patientTest {
 
     @Test
     void outputValuesSlow() throws InterruptedException {
-        generator_patient patient1 = new generator_patient("patient1");
+        generator_patient patient1 = new generator_patient("patient1","normal");
         Thread.sleep(2000);
 //        while (true) {
         for (List<Double> temp : patient1.outputValuesSlow()) {
