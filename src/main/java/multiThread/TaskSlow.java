@@ -15,67 +15,51 @@ import static Servlet.servletData.dbUrl;
 
 public class TaskSlow implements Runnable{
     List<generator_patient> patients;
+    public Connection conn=null;
     public TaskSlow(List<generator_patient> patients){
         this.patients=patients;
     }
     @Override
     public void run() {
 
-        String slowOrder="INSERT INTO other (temperature,heart,systolic,diastolic,respiratory) values (?,?,?,?,?);";
-
-        Connection conn=null;
-        PreparedStatement s=null;
+        String slowOrder;
         List<List<Double>> temp;
+
+        try {
+            conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
+        } catch (SQLException e) {
+            System.out.println("connection fail in slow loop");
+        }
+
         while (true){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 System.out.println("sleep fail");
             }
-            temp=patients.get(0).outputValuesSlow();
-
-            try {
-                conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
-            } catch (SQLException e) {
-                System.out.println("connection fail in loop");
-            }
-            for(int i=0;i<temp.get(0).size();i++) {
-                try {
-                    s = conn.prepareStatement(slowOrder);
-                    s.setDouble(1,temp.get(0).get(i));
-                    s.setDouble(2,temp.get(1).get(i));
-                    s.setDouble(3,temp.get(2).get(i));
-                    s.setDouble(4,temp.get(3).get(i));
-                    s.setDouble(5,temp.get(4).get(i));
-                    s.executeUpdate();
-                } catch (SQLException e) {
-                    System.out.println("execute fail in loop");
+            for (generator_patient patient:patients) {
+                slowOrder="INSERT INTO "+patient.ref+"slow (temperature,heart,systolic,diastolic,respiratory) values (?,?,?,?,?);";
+                temp = patient.outputValuesSlow();
+                for (int i = 0; i < temp.get(0).size(); i++) {
+                    try {
+                        PreparedStatement s = conn.prepareStatement(slowOrder);
+                        s.setDouble(1, temp.get(0).get(i));
+                        s.setDouble(2, temp.get(1).get(i));
+                        s.setDouble(3, temp.get(2).get(i));
+                        s.setDouble(4, temp.get(3).get(i));
+                        s.setDouble(5, temp.get(4).get(i));
+                        s.executeUpdate();
+                        s.close();
+                    } catch (SQLException e) {
+                        System.out.println("execute fail in slow loop");
+                    }
                 }
             }
-//            for(double data:temprature) {
-//                try {
-//                    s = conn.prepareStatement(temperatureOrder);
-//                    s.setDouble(1,data);
-//                    s.executeUpdate();
-//                } catch (SQLException e) {
-//                    System.out.println("execute fail in loop");
-//                }
+//            try {
+//                conn.close();
+//            } catch (SQLException e) {
+//                System.out.println("end connection fail in slow loop");
 //            }
-//            for(double data:systolic) {
-//                try {
-//                    s = conn.prepareStatement(systolicOrder);
-//                    s.setDouble(1,data);
-//                    s.executeUpdate();
-//                } catch (SQLException e) {
-//                    System.out.println("execute fail in loop");
-//                }
-//            }
-            try {
-                s.close();
-                conn.close();
-            } catch (SQLException e) {
-                System.out.println("end connection fail in loop");
-            }
         }
     }
 }

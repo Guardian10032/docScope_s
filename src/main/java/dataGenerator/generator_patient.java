@@ -19,31 +19,49 @@ public class generator_patient {
     private generator_systolic systolicGenerator;
     private generator_diastolic diastolicGenerator;
     private generator_respiratoryRate respiratoryGenerator;
+    public String ref;
     public generator_patient(String ref,String status){
+        this.ref=ref;
         long initialTime=new Timestamp(System.currentTimeMillis()).getTime();
-        String patientOrder="INSERT INTO patientList (reference,initialTime) values (?,?);";
-        Connection conn=null;
-        PreparedStatement s=null;
+        String patientOrder=
+                "INSERT INTO patientList (reference,initialTime) values (?,?);\n"+
+                "drop table if exists "+ref+"Slow;\n"+
+                "create table "+ref+"Slow(\n" +
+                "                      id serial primary key,\n" +
+                "                      temperature smallint,\n" +
+                "                      heart smallint,\n" +
+                "                      systolic smallint,\n" +
+                "                      diastolic smallint,\n" +
+                "                      respiratory smallint\n" +
+                ");\n" +
+                "drop table if exists "+ref+"SlowAverage;\n"+
+                "create table "+ref+"SlowAverage(\n" +
+                "                      id serial primary key,\n" +
+                "                      temperature smallint,\n" +
+                "                      heart smallint,\n" +
+                "                      systolic smallint,\n" +
+                "                      diastolic smallint,\n" +
+                "                      respiratory smallint\n" +
+                ");\n"+
+                "drop table if exists "+ref+"Fast;\n"+
+                "create table "+ref+"Fast(\n" +
+                "                      id serial primary key,\n" +
+                "                      ecg1 double precision,\n" +
+                "                      ecg2 double precision,\n" +
+                "                      RESP double precision\n" +
+                ");";
+        Connection conn;
+        PreparedStatement s;
         try {
             conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
-        } catch (SQLException e) {
-            System.out.println("connection fail");
-        }
-        try {
             s = conn.prepareStatement(patientOrder);
             s.setString(1,ref);
             s.setLong(2,initialTime);
             s.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("execute fail in adding ref");
-        }
-        try {
             s.close();
             conn.close();
-        } catch (SQLException e) {
-            System.out.println("end connection fail");
+        } catch (SQLException ignored) {
         }
-        servletData.initialTime.add(initialTime);
 
         ecg1Generator =new generator_ecg1(initialTime,status);
         ecg2Generator =new generator_ecg2(initialTime,status);
