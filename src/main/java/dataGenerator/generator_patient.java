@@ -28,20 +28,20 @@ public class generator_patient {
                 "drop table if exists "+ref+"Slow;\n"+
                 "create table "+ref+"Slow(\n" +
                 "                      id serial primary key,\n" +
-                "                      temperature smallint,\n" +
-                "                      heart smallint,\n" +
-                "                      systolic smallint,\n" +
-                "                      diastolic smallint,\n" +
-                "                      respiratory smallint\n" +
+                "                      temperature double precision,\n" +
+                "                      heart double precision,\n" +
+                "                      systolic double precision,\n" +
+                "                      diastolic double precision,\n" +
+                "                      respiratory double precision\n" +
                 ");\n" +
                 "drop table if exists "+ref+"SlowAverage;\n"+
                 "create table "+ref+"SlowAverage(\n" +
                 "                      id serial primary key,\n" +
-                "                      temperature smallint,\n" +
-                "                      heart smallint,\n" +
-                "                      systolic smallint,\n" +
-                "                      diastolic smallint,\n" +
-                "                      respiratory smallint\n" +
+                "                      temperature double precision,\n" +
+                "                      heart double precision,\n" +
+                "                      systolic double precision,\n" +
+                "                      diastolic double precision,\n" +
+                "                      respiratory double precision\n" +
                 ");\n"+
                 "drop table if exists "+ref+"Fast;\n"+
                 "create table "+ref+"Fast(\n" +
