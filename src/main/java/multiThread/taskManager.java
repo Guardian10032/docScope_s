@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
-import static Servlet.servletData.dbUrl;
+import static Servlet.servletData.*;
 
 @WebListener
 public class taskManager implements ServletContextListener {
@@ -35,18 +35,18 @@ public class taskManager implements ServletContextListener {
                 "                            initialTime bigint,\n" +
                 "                            firstName varchar(128),\n" +
                 "                            LastName varchar(128),\n" +
-                "                            gender boolean,\n" +
+                "                            gender varchar(128),\n" +
                 "                            yearBirth smallint,\n" +
-                "                            temperatureHigh smallint,\n" +
-                "                            temperatureLow smallint,\n" +
-                "                            heartHigh smallint,\n" +
-                "                            heartLow smallint,\n" +
-                "                            systolicHigh smallint,\n" +
-                "                            systolicLow smallint,\n" +
-                "                            diastolicHigh smallint,\n" +
-                "                            diastolicLow smallint,\n" +
-                "                            respiratoryHigh smallint,\n" +
-                "                            respiratoryLow smallint\n" +
+                "                            temperatureHigh double precision,\n" +
+                "                            temperatureLow double precision,\n" +
+                "                            heartHigh double precision,\n" +
+                "                            heartLow double precision,\n" +
+                "                            systolicHigh double precision,\n" +
+                "                            systolicLow double precision,\n" +
+                "                            diastolicHigh double precision,\n" +
+                "                            diastolicLow double precision,\n" +
+                "                            respiratoryHigh double precision,\n" +
+                "                            respiratoryLow double precision\n" +
                 ");";
         try {
             Connection conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
@@ -61,7 +61,7 @@ public class taskManager implements ServletContextListener {
         } catch (InterruptedException e) {
             System.out.println("sleep fail");
         }
-        List<generator_patient> patients=new ArrayList<>();
+        patients=new ArrayList<>();
 
         patients.add(new generator_patient("alpha","abnormal"));
 //        patients.add(new generator_patient("beta","normal"));

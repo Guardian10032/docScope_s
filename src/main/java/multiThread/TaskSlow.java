@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static Servlet.servletData.dbUrl;
+import static Servlet.servletData.*;
 
 public class TaskSlow implements Runnable{
     List<generator_patient> patients;
@@ -26,11 +26,10 @@ public class TaskSlow implements Runnable{
 
         String slowOrder;
         List<List<Double>> temp;
-        List<List<Double>> average=new ArrayList<>(new ArrayList<>(5));
-        for(int i=0;i<patients.size();i++) {
-            average.add(Arrays.asList(0.0, 0.0, 0.0, 0.0, 0.0));
+        List<averageCalculator> averages=new ArrayList<>(patients.size());
+        for (int i=0;i<patients.size();i++){
+            averages.add(new averageCalculator());
         }
-        List<Integer> count=new ArrayList<>(patients.size());
 
         try {
             conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
@@ -44,7 +43,8 @@ public class TaskSlow implements Runnable{
             } catch (InterruptedException e) {
                 System.out.println("sleep fail");
             }
-            for (generator_patient patient:patients) {
+            for (int t=0;t<patients.size();t++) {
+                generator_patient patient=patients.get(t);
                 slowOrder="INSERT INTO "+patient.ref+"slow (temperature,heart,systolic,diastolic,respiratory) values (?,?,?,?,?);";
                 temp = patient.outputValuesSlow();
                 for (int i = 0; i < temp.get(0).size(); i++) {
@@ -57,20 +57,29 @@ public class TaskSlow implements Runnable{
                         s.setDouble(5, temp.get(4).get(i));
                         s.executeUpdate();
                         s.close();
-                        average.set(i,Arrays.asList(Sum(temp.get(0)),Sum(temp.get(1)),Sum(temp.get(2)),
-                                Sum(temp.get(3)),Sum(temp.get(4))));
                     } catch (SQLException e) {
+                        System.out.println("execute fail in slow loop");
+                    }
+                }
+
+                averages.get(t).update(temp);
+                List<Double> average=averages.get(t).output();
+                if (average!=null) {
+                    String averageOrder = "INSERT INTO " + patient.ref + "slowAverage (temperature,heart,systolic,diastolic,respiratory) values (?,?,?,?,?);";
+                    try {
+                        PreparedStatement sAverage = conn.prepareStatement(averageOrder);
+                        sAverage.setDouble(1, average.get(0));
+                        sAverage.setDouble(2, average.get(1));
+                        sAverage.setDouble(3, average.get(2));
+                        sAverage.setDouble(4, average.get(3));
+                        sAverage.setDouble(5, average.get(4));
+                        sAverage.executeUpdate();
+                        sAverage.close();
+                    }catch (SQLException e) {
                         System.out.println("execute fail in slow loop");
                     }
                 }
             }
         }
-    }
-    private double Sum(List<Double> list){
-        double sum=0.0;
-        for(double t:list){
-            sum+=t;
-        }
-        return sum;
     }
 }

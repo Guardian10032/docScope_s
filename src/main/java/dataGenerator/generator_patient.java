@@ -1,14 +1,13 @@
 package dataGenerator;
 
-import Servlet.servletData;
-import netRelated.netAction;
-
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import static Servlet.servletData.dbUrl;
+import static netRelated.netAction.SendEmail;
 
 public class generator_patient {
     private generator_ecg1 ecg1Generator;
@@ -20,11 +19,17 @@ public class generator_patient {
     private generator_diastolic diastolicGenerator;
     private generator_respiratoryRate respiratoryGenerator;
     public String ref;
+    public List<Double> thr;
+    public List<Boolean> urgent;
     public generator_patient(String ref,String status){
+        thr= Arrays.asList(39.0,35.0,100.0,40.0,140.0,90.0,90.0,60.0,35.0,10.0);
+        urgent=Arrays.asList(false,false,false,false,false);
         this.ref=ref;
         long initialTime=new Timestamp(System.currentTimeMillis()).getTime();
         String patientOrder=
-                "INSERT INTO patientList (reference,initialTime) values (?,?);\n"+
+                "INSERT INTO patientList (reference,initialTime,temperaturehigh,temperaturelow,hearthigh,heartlow," +
+                        "systolichigh,systoliclow,diastolichigh,diastoliclow,respiratoryhigh,respiratorylow) " +
+                        "values (?,?,39,35,100,40,140,90,90,60,35,10);\n"+
                 "drop table if exists "+ref+"Slow;\n"+
                 "create table "+ref+"Slow(\n" +
                 "                      id serial primary key,\n" +
@@ -82,6 +87,17 @@ public class generator_patient {
         output.add(systolicGenerator.outputValues(currentTime));
         output.add(diastolicGenerator.outputValues(currentTime));
         output.add(respiratoryGenerator.outputValues(currentTime));
+        for(int i=0;i<5;i++){
+            for(double t : output.get(i)){
+                if (t>thr.get(2*i) || t<thr.get(2*i+1)){
+                    if (!urgent.get(i)){
+                        //SendEmail(ref,i);
+                        System.out.println(output+"    "+i);
+                    }
+                    urgent.set(i,true);
+                }else urgent.set(i,false);
+            }
+        }
         return output;
     }
     public List<List<Double>> outputValuesFast(){

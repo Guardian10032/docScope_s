@@ -2,6 +2,7 @@ package dataGenerator;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
