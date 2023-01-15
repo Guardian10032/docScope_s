@@ -20,46 +20,43 @@ import static Servlet.servletData.emailAddress;
 
 public class netAction {
     public static void SendEmail(String ref,int typeNumber) {
-        if (emailAddress == null) {
-        } else {
-            String name=getName(ref);
-            String type;
-            if (typeNumber==0){type="Body temperature";}
-            else if (typeNumber==1) {type="Heart rate";}
-            else if (typeNumber==2) {type="Systolic pressure";}
-            else if (typeNumber==3) {type="Diastolic pressure";}
-            else type="Respiratory rate";
+        String name=getName(ref);
+        String type;
+        if (typeNumber==0){type="Body temperature";}
+        else if (typeNumber==1) {type="Heart rate";}
+        else if (typeNumber==2) {type="Systolic pressure";}
+        else if (typeNumber==3) {type="Diastolic pressure";}
+        else type="Respiratory rate";
 
-            String from = "docscopeimperial0@gmail.com";
-            String host = "smtp.gmail.com";
+        String from = "docscopeimperial0@gmail.com";
+        String host = "smtp.gmail.com";
 
-            Properties properties = System.getProperties();
-            properties.put("mail.smtp.host", host);
-            properties.put("mail.smtp.port", "465");
-            properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            properties.put("mail.smtp.auth", "true");
+        Properties properties = System.getProperties();
+        properties.put("mail.smtp.host", host);
+        properties.put("mail.smtp.port", "465");
+        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.auth", "true");
 
-            Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("docscopeimperial@gmail.com", "fwkfppkrzarynbji");
-                }
-            });
-
-            try {
-                MimeMessage message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(from));
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
-                message.setSubject(name+"is in urgent condition");
-                message.setText(name+" is in urgent condition in "+
-                        new Timestamp(System.currentTimeMillis())+".\n"+
-                        type+" is out of the defined thresholds.\n"+
-                        "Please check the application for detail.\n\n"+
-                        "docScope");
-                Transport.send(message);
-            } catch (
-                    MessagingException mex) {
-                mex.printStackTrace();
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("docscopeimperial@gmail.com", "fwkfppkrzarynbji");
             }
+        });
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
+            message.setSubject(name+"is in urgent condition");
+            message.setText(name+" is in urgent condition in "+
+                    new Timestamp(System.currentTimeMillis())+".\n"+
+                    type+" is out of the defined thresholds.\n"+
+                    "Please check the application for detail.\n\n"+
+                    "docScope");
+            Transport.send(message);
+        } catch (
+                MessagingException mex) {
+            mex.printStackTrace();
         }
     }
     public static responsePack postRequestReal(requestPack reqPack) throws IOException {

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static Servlet.servletData.dbUrl;
+import static Servlet.servletData.emailAddress;
 import static netRelated.netAction.SendEmail;
 
 public class generator_patient {
@@ -87,15 +88,17 @@ public class generator_patient {
         output.add(systolicGenerator.outputValues(currentTime));
         output.add(diastolicGenerator.outputValues(currentTime));
         output.add(respiratoryGenerator.outputValues(currentTime));
-        for(int i=0;i<5;i++){
-            for(double t : output.get(i)){
-                if (t>thr.get(2*i) || t<thr.get(2*i+1)){
-                    if (!urgent.get(i)){
-                        SendEmail(ref,i);
+        if (emailAddress != null) {
+            for(int i=0;i<5;i++){
+                for(double t : output.get(i)){
+                    if (t>thr.get(2*i) || t<thr.get(2*i+1)){
+                        if (!urgent.get(i)){
+                            SendEmail(ref,i);
 //                        System.out.println(output+"    "+i);
-                    }
-                    urgent.set(i,true);
-                }else urgent.set(i,false);
+                        }
+                        urgent.set(i,true);
+                    }else urgent.set(i,false);
+                }
             }
         }
         return output;
