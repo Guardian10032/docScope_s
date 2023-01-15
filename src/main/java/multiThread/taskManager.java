@@ -64,7 +64,7 @@ public class taskManager implements ServletContextListener {
         patients=new ArrayList<>();
 
         patients.add(new generator_patient("alpha","abnormal"));
-//        patients.add(new generator_patient("beta","normal"));
+        patients.add(new generator_patient("beta","normal"));
         taskFast=new TaskFast(patients);
         taskSlow=new TaskSlow(patients);
         threadFast =new Thread(taskFast);
