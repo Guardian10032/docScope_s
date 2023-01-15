@@ -71,12 +71,6 @@ public class taskManager implements ServletContextListener {
         threadSlow =new Thread(taskSlow);
         threadFast.start();
         threadSlow.start();
-//        long initialTime= netAction.getInitialTime();
-//        Timestamp clock=new Timestamp(initialTime);
-//        Timestamp initialDelay=new Timestamp(clock.getYear()+1900, clock.getMonth(),clock.getDate(),23,59,59,999999999);
-//        scheduler = Executors.newSingleThreadScheduledExecutor();
-//        scheduler.scheduleAtFixedRate(new scheduleTask(), initialDelay.getTime()-initialTime, 86400000, TimeUnit.MILLISECONDS);
-//
     }
 
     @Override
