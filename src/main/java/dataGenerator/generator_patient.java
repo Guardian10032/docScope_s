@@ -3,13 +3,15 @@ package dataGenerator;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
+import static Servlet.servletData.SendEmail;
 import static Servlet.servletData.dbUrl;
 import static Servlet.servletData.emailAddress;
-import static netRelated.netAction.SendEmail;
 
+/**
+ * a simulation of one patient with machines measuring different signals
+ */
 public class generator_patient {
     private generator_ecg1 ecg1Generator;
     private generator_ecg2 ecg2Generator;
@@ -22,13 +24,24 @@ public class generator_patient {
     public String ref;
     public List<Double> thr;
     public List<Boolean> urgent;
+
+    /**
+     * create a patient object by its reference and status
+     * @param ref unique value to determine a patient
+     * @param status normal or abnormal
+     */
     public generator_patient(String ref,String status){
-        thr= Arrays.asList(38.0,35.0,110.0,50.0,145.0,85.0,90.0,55.0,20.0,12.0);
-        urgent=Arrays.asList(false,false,false,false,false);
+        thr= Arrays.asList(38.0,35.0,110.0,50.0,145.0,85.0,90.0,55.0,20.0,12.0); //default threshold
+        urgent=Arrays.asList(false,false,false,false,false); //default urgent status
         this.ref=ref;
         long initialTime=new Timestamp(System.currentTimeMillis()).getTime();
+        //inset the patient to patientList table in database
+        //create tables to store signals
+        //body temperature, heart rate, systolic pressure, diastolic pressure and respiratory rate are in slow table.
+        //Their averages are in slowAverage table.
+        //ecg and resp are in fast table
         String patientOrder=
-                "INSERT INTO patientList (reference,initialTime,temperaturehigh,temperaturelow,hearthigh,heartlow," +
+                "INSERT INTO patientlist (reference,initialTime,temperaturehigh,temperaturelow,hearthigh,heartlow," +
                         "systolichigh,systoliclow,diastolichigh,diastoliclow,respiratoryhigh,respiratorylow) " +
                         "values (?,?,38,35,110,50,145,85,90,55,20,12);\n"+
                 "drop table if exists "+ref+"Slow;\n"+
@@ -69,6 +82,7 @@ public class generator_patient {
         } catch (SQLException ignored) {
         }
 
+        //create objects for different type of signals
         ecg1Generator =new generator_ecg1(initialTime,status);
         ecg2Generator =new generator_ecg2(initialTime,status);
         respGenerator=new generator_resp(initialTime,status);
@@ -80,21 +94,28 @@ public class generator_patient {
         respiratoryGenerator=new generator_respiratoryRate(initialTime,status);
     }
 
+    /**
+     * give slow signals (body temperature, heart rate, systolic pressure, diastolic pressure and respiratory rate).
+     * check whether the patient is regent situation or not to send a notification e-mail,
+     * if e-mail address is provided.
+     * @return slow signals
+     */
     public List<List<Double>> outputValuesSlow(){
         long currentTime=new Timestamp(System.currentTimeMillis()).getTime();
         List<List<Double>> output=new ArrayList<>();
+        //get signals
         output.add(temperatureGenerator.outputValues(currentTime));
         output.add(heartGenerator.outputValues(currentTime));
         output.add(systolicGenerator.outputValues(currentTime));
         output.add(diastolicGenerator.outputValues(currentTime));
         output.add(respiratoryGenerator.outputValues(currentTime));
+        //check with the thresholds
         if (emailAddress != null) {
             for(int i=0;i<5;i++){
                 for(double t : output.get(i)){
                     if (t>thr.get(2*i) || t<thr.get(2*i+1)){
                         if (!urgent.get(i)){
                             SendEmail(ref,i);
-//                        System.out.println(output+"    "+i);
                         }
                         urgent.set(i,true);
                     }else urgent.set(i,false);
@@ -103,9 +124,15 @@ public class generator_patient {
         }
         return output;
     }
+
+    /**
+     * give slow signals (ecg lead I, ecg lead II and resp).
+     * @return fast signals
+     */
     public List<List<Double>> outputValuesFast(){
         long currentTime=new Timestamp(System.currentTimeMillis()).getTime();
         List<List<Double>> output=new ArrayList<>();
+        //get signals
         output.add(ecg1Generator.outputValues(currentTime));
         output.add(ecg2Generator.outputValues(currentTime));
         output.add(respGenerator.outputValues(currentTime));

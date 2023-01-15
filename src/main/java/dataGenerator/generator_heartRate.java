@@ -1,10 +1,15 @@
 package dataGenerator;
 
-import java.util.List;
-
-import static java.lang.Math.ceil;
-
+/**
+ * a simulation of the machine measuring hear rate signal
+ */
 public class generator_heartRate extends generatorHeartRelate{
+    /**
+     * load two files based on status
+     * @param initialTime save the initial time when the object is created,
+     *                    this is also the corresponding time of the first value
+     * @param status normal or abnormal
+     */
     public generator_heartRate(long initialTime,String status) {
         super(initialTime,status);
         interval=1000;
@@ -14,6 +19,7 @@ public class generator_heartRate extends generatorHeartRelate{
         size= Former.size();
         Former.addAll(Latter);
     }
+
     public String fileSelector() {
         randomHeartGenerator();
         if (fileHeartIndex<25) return "heart_normal1";

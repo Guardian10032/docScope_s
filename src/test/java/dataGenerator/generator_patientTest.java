@@ -2,13 +2,12 @@ package dataGenerator;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class generator_patientTest {
-    //test whether the generator_patient class will give non-null signals
+    //test whether the generator_patient class will give non-null and correct signals
 
     @Test
     void outputValuesSlow() throws InterruptedException {

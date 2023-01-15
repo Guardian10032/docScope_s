@@ -1,12 +1,17 @@
 package dataGenerator;
 
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.Random;
 
-import static java.lang.Math.ceil;
-
+/**
+ * a simulation of the machine measuring systolic pressure
+ */
 public class generator_systolic extends generator{
+    /**
+     * load two files based on status
+     * @param initialTime save the initial time when the object is created,
+     *                    this is also the corresponding time of the first value
+     * @param status normal or abnormal
+     */
     public generator_systolic(long initialTime,String status) {
         super(initialTime,status);
         interval=1000;

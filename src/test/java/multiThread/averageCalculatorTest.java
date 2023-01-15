@@ -26,9 +26,9 @@ class averageCalculatorTest {
             if (test == null) {
             }else {
                 assertEquals(i,19);
-                assertEquals(average.Signals[0].size(),0);//size should be zero when erase the first 60 values
+                assertEquals(0,average.Signals[0].size());//size should be zero when erase the first 60 values
                 for (double t:test){
-                    assertEquals(t,0.10000000000000002);//compare the average
+                    assertEquals(0.10000000000000002,t);//compare the average
                 }
             }
         }

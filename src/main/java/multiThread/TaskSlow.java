@@ -1,23 +1,27 @@
 package multiThread;
 
 import dataGenerator.generator_patient;
-import dataGenerator.generator_systolic;
-import dataGenerator.generator_temperature;
-import netRelated.netAction;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static Servlet.servletData.*;
 
+/**
+ * non-stop loop that run every second ideally.
+ * used to record body temperature, heart rate, systolic pressure, diastolic pressure and respiratory rate
+ */
 public class TaskSlow implements Runnable{
     List<generator_patient> patients;
     public Connection conn=null;
+    /**
+     * create the task
+     * @param patients list containing patient simulators
+     */
     public TaskSlow(List<generator_patient> patients){
         this.patients=patients;
     }
@@ -38,6 +42,7 @@ public class TaskSlow implements Runnable{
         }
 
         while (true){
+            //Fast task here: sampling frequency is 1Hz refresh about every second
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -46,7 +51,8 @@ public class TaskSlow implements Runnable{
             for (int t=0;t<patients.size();t++) {
                 generator_patient patient=patients.get(t);
                 slowOrder="INSERT INTO "+patient.ref+"slow (temperature,heart,systolic,diastolic,respiratory) values (?,?,?,?,?);";
-                temp = patient.outputValuesSlow();
+                temp = patient.outputValuesSlow();//get the signals
+                //insert values to the corresponding table
                 for (int i = 0; i < temp.get(0).size(); i++) {
                     try {
                         PreparedStatement s = conn.prepareStatement(slowOrder);

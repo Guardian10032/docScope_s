@@ -7,10 +7,18 @@ import java.util.List;
 
 import static Servlet.servletData.dbUrl;
 
-
+/**
+ * non-stop loop that run every 50ms ideally.
+ * used to record ecg and resp signals
+ */
 public class TaskFast implements Runnable{
     List<generator_patient> patients;
     public Connection conn=null;
+
+    /**
+     * create the task
+     * @param patients list containing patient simulators
+     */
     public TaskFast(List<generator_patient> patients){
         this.patients=patients;
     }
@@ -21,21 +29,17 @@ public class TaskFast implements Runnable{
 
         try {
             conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
-        } catch (SQLException e) {
-            System.out.println("connection fail in fast loop");
-        }
+        } catch (SQLException ignored) {}
 
         while (true){
-            //Fast task here: sampling frequency is 500Hz refresh about every 100ms
+            //Fast task here: sampling frequency is 500Hz refresh about every 100ms due to delay
             try {
                 Thread.sleep(50);
-            } catch (InterruptedException e) {
-                System.out.println("sleep fail");
-            }
+            } catch (InterruptedException ignored) {}
             for (generator_patient patient:patients) {
                 fastOrder = "INSERT INTO "+patient.ref+"fast (ecg1,ecg2,resp) values (?,?,?);";
-                temp = patient.outputValuesFast();
-
+                temp = patient.outputValuesFast();// get the signals
+                //insert values to the corresponding table
                 for(int i=0;i<temp.get(0).size();i++) {
                     try {
                         PreparedStatement s = conn.prepareStatement(fastOrder);
@@ -44,16 +48,9 @@ public class TaskFast implements Runnable{
                         s.setDouble(3,temp.get(2).get(i));
                         s.executeUpdate();
                         s.close();
-                    } catch (SQLException e) {
-                        System.out.println("execute fail in fast loop");
-                    }
+                    } catch (SQLException ignored) {}
                 }
             }
-//            try {
-//                conn.close();
-//            } catch (SQLException e) {
-//                System.out.println("end connection fail in fast loop");
-//            }
         }
     }
 }

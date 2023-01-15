@@ -10,14 +10,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 
 import static Servlet.servletData.*;
 
+/**
+ * start when the servlet is created,
+ * create patientList table in database,
+ * manage the fast task and slow task
+ */
 @WebListener
 public class taskManager implements ServletContextListener {
-    private ScheduledExecutorService scheduler;
     TaskFast taskFast;
     TaskSlow taskSlow;
     Thread threadFast;
@@ -26,8 +28,8 @@ public class taskManager implements ServletContextListener {
     public void contextInitialized(ServletContextEvent event) {
         try {
             Class.forName("org.postgresql.Driver");
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) {}
+        //create patientList table to store information of patients
         String patientListTable=
                 "drop table if exists patientList;\n"+
                 "create table patientList(\n" +
@@ -58,13 +60,13 @@ public class taskManager implements ServletContextListener {
         }
         try {
             Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            System.out.println("sleep fail");
-        }
+        } catch (InterruptedException ignored) {}
+        //create objects as the simulators of patients
         patients=new ArrayList<>();
-
+        //add patient simulators to the list
         patients.add(new generator_patient("abnormal_patient","abnormal"));
         patients.add(new generator_patient("normal_patient","normal"));
+        //put the patients to tasks that keep running
         taskFast=new TaskFast(patients);
         taskSlow=new TaskSlow(patients);
         threadFast =new Thread(taskFast);
@@ -75,13 +77,11 @@ public class taskManager implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-//        scheduler.shutdownNow();
+        //close the connections and stop the thread when servlet is destroyed
         try {
             taskFast.conn.close();
             taskSlow.conn.close();
-        } catch (SQLException e) {
-            System.out.println("end connection failed");
-        }
+        } catch (SQLException ignored) {}
         threadFast.stop();
         threadSlow.stop();
     }
