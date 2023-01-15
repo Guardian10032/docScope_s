@@ -11,9 +11,7 @@ import java.util.List;
 
 public class servletData {
     public static String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-    public static String emailAddress="yaoshuyu0430@outlook.com";
+    public static String emailAddress=null;
     public static List<generator_patient> patients;
-//    public static List<String> referenceList=new ArrayList<>();
-//    public static List<Long> initialTime=new ArrayList<>();
 
 }
