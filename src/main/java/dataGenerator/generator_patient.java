@@ -22,14 +22,14 @@ public class generator_patient {
     public List<Double> thr;
     public List<Boolean> urgent;
     public generator_patient(String ref,String status){
-        thr= Arrays.asList(39.0,35.0,100.0,40.0,140.0,90.0,90.0,60.0,35.0,10.0);
+        thr= Arrays.asList(38.0,35.0,110.0,50.0,145.0,85.0,90.0,55.0,20.0,12.0);
         urgent=Arrays.asList(false,false,false,false,false);
         this.ref=ref;
         long initialTime=new Timestamp(System.currentTimeMillis()).getTime();
         String patientOrder=
                 "INSERT INTO patientList (reference,initialTime,temperaturehigh,temperaturelow,hearthigh,heartlow," +
                         "systolichigh,systoliclow,diastolichigh,diastoliclow,respiratoryhigh,respiratorylow) " +
-                        "values (?,?,39,35,100,40,140,90,90,60,35,10);\n"+
+                        "values (?,?,38,35,110,50,145,85,90,55,20,12);\n"+
                 "drop table if exists "+ref+"Slow;\n"+
                 "create table "+ref+"Slow(\n" +
                 "                      id serial primary key,\n" +
@@ -91,8 +91,8 @@ public class generator_patient {
             for(double t : output.get(i)){
                 if (t>thr.get(2*i) || t<thr.get(2*i+1)){
                     if (!urgent.get(i)){
-                        //SendEmail(ref,i);
-                        System.out.println(output+"    "+i);
+                        SendEmail(ref,i);
+//                        System.out.println(output+"    "+i);
                     }
                     urgent.set(i,true);
                 }else urgent.set(i,false);
