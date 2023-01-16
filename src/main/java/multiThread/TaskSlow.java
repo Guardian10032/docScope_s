@@ -37,17 +37,14 @@ public class TaskSlow implements Runnable{
 
         try {
             conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
-        } catch (SQLException e) {
-            System.out.println("connection fail in slow loop");
-        }
+        } catch (SQLException ignored) {}
 
         while (true){
             //Fast task here: sampling frequency is 1Hz refresh about every second
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                System.out.println("sleep fail");
-            }
+            } catch (InterruptedException ignored) {}
+
             for (int t=0;t<patients.size();t++) {
                 generator_patient patient=patients.get(t);
                 slowOrder="INSERT INTO "+patient.ref+"slow (temperature,heart,systolic,diastolic,respiratory) values (?,?,?,?,?);";
@@ -63,9 +60,7 @@ public class TaskSlow implements Runnable{
                         s.setDouble(5, temp.get(4).get(i));
                         s.executeUpdate();
                         s.close();
-                    } catch (SQLException e) {
-                        System.out.println("execute fail in slow loop");
-                    }
+                    } catch (SQLException ignored) {}
                 }
 
                 averages.get(t).update(temp);
@@ -81,9 +76,7 @@ public class TaskSlow implements Runnable{
                         sAverage.setDouble(5, average.get(4));
                         sAverage.executeUpdate();
                         sAverage.close();
-                    }catch (SQLException e) {
-                        System.out.println("execute fail in slow loop");
-                    }
+                    }catch (SQLException ignored) {}
                 }
             }
         }
