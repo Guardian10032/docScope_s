@@ -61,6 +61,7 @@ public class servletData {
         String from = "docscopeimperial0@gmail.com";
         String host = "smtp.gmail.com";
         Properties properties = System.getProperties();
+        //connect to gmail servlet
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", "465");
         properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
@@ -75,7 +76,7 @@ public class servletData {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailAddress));
-            message.setSubject(name+"is in urgent condition");
+            message.setSubject(name+" ("+ref+") "+"is in urgent condition");
             message.setText(name+" is in urgent condition in "+
                     new Timestamp(System.currentTimeMillis())+".\n"+
                     type+" is out of the defined thresholds.\n"+
