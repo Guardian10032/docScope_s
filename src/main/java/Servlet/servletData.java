@@ -41,6 +41,7 @@ public class servletData {
             s.setString(1,ref);
             ResultSet resultSet = s.executeQuery();
             while (resultSet.next()) {
+                if (resultSet.getString(1)==null) return;
                 name = resultSet.getString(1)+" "+resultSet.getString(2);
             }
             s.close();
