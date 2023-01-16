@@ -64,8 +64,10 @@ public class taskManager implements ServletContextListener {
         //create objects as the simulators of patients
         patients=new ArrayList<>();
         //add patient simulators to the list
-        patients.add(new generator_patient("abnormal_patient","abnormal"));
-        patients.add(new generator_patient("normal_patient","normal"));
+        patients.add(new generator_patient("abnormal_1","abnormal"));
+        patients.add(new generator_patient("abnormal_2","abnormal"));
+        patients.add(new generator_patient("normal_1","normal"));
+        patients.add(new generator_patient("normal_2","normal"));
         //put the patients to tasks that keep running
         taskFast=new TaskFast(patients);
         taskSlow=new TaskSlow(patients);

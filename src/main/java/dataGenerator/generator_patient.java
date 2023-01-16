@@ -116,9 +116,9 @@ public class generator_patient {
                     if (t>thr.get(2*i) || t<thr.get(2*i+1)){
                         if (!urgent.get(i)){
                             SendEmail(ref,i);
+                            urgent.set(i,true);
                         }
-                        urgent.set(i,true);
-                    }else urgent.set(i,false);
+                    }else if (urgent.get(i)) urgent.set(i,false);
                 }
             }
         }
