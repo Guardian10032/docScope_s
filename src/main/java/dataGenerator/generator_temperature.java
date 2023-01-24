@@ -38,19 +38,16 @@ public class generator_temperature extends generator{
             partIndex=0;
             Former=data.loadFile(fileSelector());
             Former=new ArrayList<>(Former.subList(3600*hour+60*min+sec,Former.size()-1));
-            partIndex++;
             Latter=data.loadFile(fileSelector());
         } else if (hour<16) {
             partIndex=1;
             Former=data.loadFile(fileSelector());
             Former=new ArrayList<>(Former.subList(3600*(hour-8)+60*min+sec,Former.size()-1));
-            partIndex++;
             Latter=data.loadFile(fileSelector());
         }else {
             partIndex=2;
             Former=data.loadFile(fileSelector());
             Former=new ArrayList<>(Former.subList(3600*(hour-16)+60*min+sec,Former.size()-1));
-            partIndex=0;
             Latter=data.loadFile(fileSelector());
         }
         size= Former.size();
